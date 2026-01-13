@@ -41,17 +41,17 @@ uv sync
 使用 `uv` 运行服务器脚本：
 
 ```bash
-# 默认端口 18080
+# 默认端口 80
 uv run server.py
 
 # 指定端口
-uv run server.py --port 18081
+uv run server.py --port 80
 ```
 
 启动成功后，控制台将输出：
 ```text
-Starting SSE server on http://0.0.0.0:18081
-Tools available at http://0.0.0.0:18081/mcp/tools
+Starting SSE server on http://0.0.0.0:80
+Tools available at http://0.0.0.0:80/mcp/tools
 ```
 
 ### 3. 配置 MCP 客户端
@@ -67,7 +67,7 @@ Tools available at http://0.0.0.0:18081/mcp/tools
         "run",
         "server.py",
         "--port",
-        "18081"
+        "80"
       ],
       "cwd": "D:/study/sim-mcp-tools",
       "env": {}
@@ -75,7 +75,7 @@ Tools available at http://0.0.0.0:18081/mcp/tools
   }
 }
 ```
-*注意：由于本项目是 SSE Server，上述配置是让客户端自动启动 Server。如果 Server 已经在后台运行，某些客户端支持直接连接 SSE URL (`http://localhost:18081/sse`)。*
+*注意：由于本项目是 SSE Server，上述配置是让客户端自动启动 Server。如果 Server 已经在后台运行，某些客户端支持直接连接 SSE URL (`http://localhost:80/sse`)。*
 
 ## 🧰 可用工具 (Tools)
 

@@ -62,7 +62,7 @@ if __name__ == "__main__":
     # 解析命令行参数
     parser = argparse.ArgumentParser(description='Run MCP SSE-based server')
     parser.add_argument('--host', default='0.0.0.0', help='Host to bind to')
-    parser.add_argument('--port', type=int, default=18080, help='Port to listen on')
+    parser.add_argument('--port', type=int, default=80, help='Port to listen on')
     args = parser.parse_args()
 
     # 创建并运行 Starlette 应用
