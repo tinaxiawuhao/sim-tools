@@ -1,8 +1,12 @@
 import httpx
+import os
 from typing import Optional, Dict, Any
+from dotenv import load_dotenv
+
+load_dotenv()
 
 class SimClient:
-    BASE_URL = "https://dt-fflc-vanlinks.hdt.cosmoplat.com"
+    BASE_URL = os.getenv("BASE_URL", "https://dt-fflc-vanlinks.hdt.cosmoplat.com")
     _token: Optional[str] = None
     _headers: Dict[str, str] = {
         "Content-Type": "application/json"
@@ -72,17 +76,6 @@ class SimClient:
             return f"Login failed: {str(e)}"
 
     @classmethod
-    async def post(cls, path: str, data: Dict[str, Any] = None) -> Dict[str, Any]:
-        if not cls.is_logged_in():
-             return {"code": -1, "msg": "Not logged in. Please call 'login' tool first."}
-        
-        url = f"{cls.BASE_URL}{path}"
-        async with httpx.AsyncClient() as client:
-            resp = await client.post(url, json=data, headers=cls._headers, timeout=30.0)
-            # resp.raise_for_status() # Let's return the JSON even on error to see msg
-            return resp.json()
-
-    @classmethod
     async def get(cls, path: str, params: Dict[str, Any] = None) -> Dict[str, Any]:
         if not cls.is_logged_in():
              return {"code": -1, "msg": "Not logged in. Please call 'login' tool first."}
@@ -93,11 +86,34 @@ class SimClient:
             return resp.json()
 
     @classmethod
-    async def delete(cls, path: str, params: Dict[str, Any] = None) -> Dict[str, Any]:
+    async def post(cls, path: str, data: Dict[str, Any] = None) -> Dict[str, Any]:
         if not cls.is_logged_in():
              return {"code": -1, "msg": "Not logged in. Please call 'login' tool first."}
         
         url = f"{cls.BASE_URL}{path}"
         async with httpx.AsyncClient() as client:
-            resp = await client.delete(url, params=params, headers=cls._headers, timeout=30.0)
+            resp = await client.post(url, json=data, headers=cls._headers, timeout=30.0)
+            return resp.json()
+
+    @classmethod
+    async def put(cls, path: str, data: Dict[str, Any] = None, params: Dict[str, Any] = None) -> Dict[str, Any]:
+        if not cls.is_logged_in():
+             return {"code": -1, "msg": "Not logged in. Please call 'login' tool first."}
+        
+        url = f"{cls.BASE_URL}{path}"
+        async with httpx.AsyncClient() as client:
+            resp = await client.put(url, json=data, params=params, headers=cls._headers, timeout=30.0)
+            return resp.json()
+
+    @classmethod
+    async def delete(cls, path: str, params: Dict[str, Any] = None, data: Any = None) -> Dict[str, Any]:
+        if not cls.is_logged_in():
+             return {"code": -1, "msg": "Not logged in. Please call 'login' tool first."}
+        
+        url = f"{cls.BASE_URL}{path}"
+        async with httpx.AsyncClient() as client:
+            if data is not None:
+                resp = await client.request("DELETE", url, params=params, json=data, headers=cls._headers, timeout=30.0)
+            else:
+                resp = await client.delete(url, params=params, headers=cls._headers, timeout=30.0)
             return resp.json()

@@ -83,15 +83,23 @@ Tools available at http://0.0.0.0:80/mcp/tools
 *   **`login(username, password)`**: 登录仿真平台。**这是必须调用的第一个工具**。
 
 ### 案例管理
-*   **`query_cases_list(case_name, page_index, page_size)`**: 查询案例列表。
+*   **`query_cases_list(case_name, page_index, page_size)`**: 分页查询案例列表。
 *   **`get_case_details(case_id)`**: 获取指定案例详情。
 *   **`delete_case(case_id)`**: 删除案例。
 
-### 用户管理
+### 用户与角色管理
 *   **`get_user_list(login_name)`**: 查询用户列表。
+*   **`get_role_list(role_name, role_type, page, size)`**: 查询角色列表。
+
+### 价值流与模板
+*   **`query_value_stream_templates(template_name, case_id)`**: 查询价值流模板列表。
+*   **`save_value_stream_template(template_name, template_json, id, case_id)`**: 新增或编辑价值流模板。
+*   **`delete_value_stream_template(id)`**: 删除价值流模板。
+*   **`get_value_stream_object_data_box_list(case_id, object_type, object_name)`**: 查询价值流对象数据框。
+*   **`save_value_stream_object_data_box(...)`**: 新增或编辑价值流对象数据框。
+*   **`delete_value_stream_object_data_box(id)`**: 删除价值流对象数据框。
 
 ### 模型与点位
-*   **`query_value_stream_templates(template_name, case_id)`**: 查询价值流模板。
 *   **`save_case_model_point(...)`**: 新增或更新本地 PLC 调试的模型点位。
 *   **`query_case_model_points(case_id, ...)`**: 查询模型点位数据。
 
