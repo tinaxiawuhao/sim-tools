@@ -25,6 +25,10 @@ async def login(username: str, password: str) -> str:
     """
     登录仿真平台获取 Access Token。
     必须在调用其他工具前先调用此工具。
+
+    Args:
+    username: 账户 (必填)
+    password: 密码 (必填)
     """
     return await SimClient.login(username, password)
 
@@ -38,8 +42,8 @@ async def query_cases_list(
     查询仿真案例列表。
     
     Args:
-        case_name: 案例名称过滤 (可选)
-        publish_state: 发布状态过滤 (可选)
+        case_name: 案例名称过滤 (必填)
+        publish_state: 发布状态过滤 (必填)
     """
     params = {}
     if case_name:
