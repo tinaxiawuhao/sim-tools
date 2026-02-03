@@ -5,22 +5,27 @@ from dotenv import load_dotenv
 
 load_dotenv()
 
+# 使用全局变量存储 token 和 headers，确保在不同请求之间保持状态
+_global_token: Optional[str] = None
+_global_headers: Dict[str, str] = {
+    "Content-Type": "application/json"
+}
+
 class SimClient:
     BASE_URL = os.getenv("BASE_URL", "https://dt-fflc-vanlinks.hdt.cosmoplat.com")
-    _token: Optional[str] = None
-    _headers: Dict[str, str] = {
-        "Content-Type": "application/json"
-    }
 
     @classmethod
     def set_token(cls, token: str):
-        cls._token = token
+        global _global_token
+        global _global_headers
+        _global_token = token
         # Assuming Bearer token, adjust if needed based on real API response
-        cls._headers["Authorization"] = f"{token}" 
+        _global_headers["Authorization"] = f"{token}" 
 
     @classmethod
     def is_logged_in(cls) -> bool:
-        return cls._token is not None
+        global _global_token
+        return _global_token is not None
 
     @classmethod
     async def login(cls, username: str, password: str) -> str:
@@ -77,43 +82,47 @@ class SimClient:
 
     @classmethod
     async def get(cls, path: str, params: Dict[str, Any] = None) -> Dict[str, Any]:
+        global _global_headers
         if not cls.is_logged_in():
              return {"code": -1, "msg": "Not logged in. Please call 'login' tool first."}
         
         url = f"{cls.BASE_URL}{path}"
         async with httpx.AsyncClient() as client:
-            resp = await client.get(url, params=params, headers=cls._headers, timeout=30.0)
+            resp = await client.get(url, params=params, headers=_global_headers, timeout=30.0)
             return resp.json()
 
     @classmethod
     async def post(cls, path: str, data: Dict[str, Any] = None) -> Dict[str, Any]:
+        global _global_headers
         if not cls.is_logged_in():
              return {"code": -1, "msg": "Not logged in. Please call 'login' tool first."}
         
         url = f"{cls.BASE_URL}{path}"
         async with httpx.AsyncClient() as client:
-            resp = await client.post(url, json=data, headers=cls._headers, timeout=30.0)
+            resp = await client.post(url, json=data, headers=_global_headers, timeout=30.0)
             return resp.json()
 
     @classmethod
     async def put(cls, path: str, data: Dict[str, Any] = None, params: Dict[str, Any] = None) -> Dict[str, Any]:
+        global _global_headers
         if not cls.is_logged_in():
              return {"code": -1, "msg": "Not logged in. Please call 'login' tool first."}
         
         url = f"{cls.BASE_URL}{path}"
         async with httpx.AsyncClient() as client:
-            resp = await client.put(url, json=data, params=params, headers=cls._headers, timeout=30.0)
+            resp = await client.put(url, json=data, params=params, headers=_global_headers, timeout=30.0)
             return resp.json()
 
     @classmethod
     async def delete(cls, path: str, params: Dict[str, Any] = None, data: Any = None) -> Dict[str, Any]:
+        global _global_headers
         if not cls.is_logged_in():
              return {"code": -1, "msg": "Not logged in. Please call 'login' tool first."}
         
         url = f"{cls.BASE_URL}{path}"
         async with httpx.AsyncClient() as client:
             if data is not None:
-                resp = await client.request("DELETE", url, params=params, json=data, headers=cls._headers, timeout=30.0)
+                resp = await client.request("DELETE", url, params=params, json=data, headers=_global_headers, timeout=30.0)
             else:
-                resp = await client.delete(url, params=params, headers=cls._headers, timeout=30.0)
+                resp = await client.delete(url, params=params, headers=_global_headers, timeout=30.0)
             return resp.json()
