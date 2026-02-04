@@ -1,7 +1,7 @@
 from mcp.server.fastmcp import FastMCP
 from .sim_client import SimClient
 import functools
-from typing import Optional, List, Dict, Any
+from typing import Optional, Any
 
 # Create the FastMCP server instance
 mcp = FastMCP[Any]("sim-mcp-sse")
@@ -37,37 +37,21 @@ async def login(username: str, password: str) -> str:
 @ensure_login
 async def get_user_list(company_id: int, login_name: Optional[str] = None) -> str:
     """
-    获取用户列表。
+    获取组织列表
     
     Args:
         company_id: 公司ID (必填)
-        login_name: 登录名过滤 (可选)
     """
     params = {"companyId": company_id}
-    if login_name:
-        params["loginName"] = login_name
         
-    result = await SimClient.get("/api/user/getUserList", params=params)
+    result = await SimClient.get("/api/company/getCompanyInfoList", params=params)
     return str(result)
 
-
-
-# --- Permission Management ---
 
 @mcp.tool()
-@ensure_login
-async def get_menu_permissions() -> str:
+async def check_login_status() -> str:
     """
-    获取用户拥有菜单权限。
+    检查当前登录状态。
     """
-    result = await SimClient.get("/api/permission/getMenuPermissions")
-    return str(result)
-
-@mcp.tool()
-@ensure_login
-async def get_menu_authorization() -> str:
-    """
-    获取菜单授权列表。
-    """
-    result = await SimClient.get("/api/permission/getMenuAuthorization")
-    return str(result)
+    is_logged_in = SimClient.is_logged_in()
+    return f"Login status: {is_logged_in}"
